@@ -12,11 +12,12 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
 
     enum class Status {
         EXCUTE,
+        WAITFORLINK,
         SUCCESS,
         FAIL
     }
 
-    private val authRepository: AuthRepository = AuthRepository
+    private val authRepository: AuthRepository = AuthRepository(application.applicationContext)
 
     val status: MutableLiveData<SignupViewModel.Status> = MutableLiveData()
     val email: MutableLiveData<String> = MutableLiveData()
@@ -29,12 +30,24 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
         status.postValue(Status.EXCUTE)
         viewModelScope.launch {
             try {
-                val result = authRepository.signup(email)
-                status.postValue(Status.SUCCESS)
+                authRepository.signup(email)
+                status.postValue(Status.WAITFORLINK)
             } catch (e: Exception) {
                 status.postValue(Status.FAIL)
             }
         }
     }
 
+    fun loginWithEmailLink(emailLink: String) {
+        authRepository.getSavedEmail()?.let { email ->
+            viewModelScope.launch {
+                try {
+                    authRepository.login(email, emailLink)
+                    status.postValue(Status.SUCCESS)
+                } catch (e: Exception) {
+                    status.postValue(Status.FAIL)
+                }
+            }
+        }
+    }
 }

@@ -18,7 +18,7 @@ object Auth {
         val actionCodeSettings = actionCodeSettings {
             url = "https://fummicc1.page.link/zXbp"
             setAndroidPackageName(
-                "com.example.android",
+                "dev.fummicc1.reco",
                 true,
                 "21"
             )

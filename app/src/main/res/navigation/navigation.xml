@@ -13,16 +13,9 @@
         <action
             android:id="@+id/action_mainFragment_to_signupFragment"
             app:destination="@id/signupFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/signupFragment"
         android:name="dev.fummicc1.reco.ui.signup.SignupFragment"
         android:label="SignupFragment" />
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="dev.fummicc1.reco.ui.login.LoginFragment"
-        android:label="LoginFragment" />
 </navigation>

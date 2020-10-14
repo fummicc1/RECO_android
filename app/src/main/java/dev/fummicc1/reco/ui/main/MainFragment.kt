@@ -17,10 +17,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class MainFragment : Fragment(), CoroutineScope {
+class MainFragment : Fragment() {
 
     private val job: Job = Job()
-    override val coroutineContext: CoroutineContext = Dispatchers.Main + job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,9 +31,7 @@ class MainFragment : Fragment(), CoroutineScope {
         binding.apply {
             viewModel.isLogin.observe(viewLifecycleOwner, Observer {
                 if (!it) {
-                    launch {
-                        findNavController().navigate(MainFragmentDirections.actionMainFragmentToSignupFragment())
-                    }
+                    findNavController().navigate(MainFragmentDirections.actionMainFragmentToSignupFragment())
                 }
             })
         }

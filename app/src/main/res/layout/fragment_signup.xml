@@ -4,6 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="dev.fummicc1.reco.ui.signup.SignupViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
@@ -16,6 +22,7 @@
             android:layout_marginTop="152dp"
             android:autoLink="email"
             android:ems="10"
+            android:text="@{viewModel.email}"
             android:hint="@string/email_address"
             android:inputType="textEmailAddress"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,8 +36,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="96dp"
             android:text="@string/signup"
+            android:onClick="@{() -> viewModel.signup()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

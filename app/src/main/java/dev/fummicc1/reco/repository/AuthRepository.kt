@@ -1,7 +1,10 @@
 package dev.fummicc1.reco.repository
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.common.util.SharedPreferencesUtils
 import com.google.firebase.auth.FirebaseUser
 import dev.fummicc1.reco.firebase.Auth
 import kotlinx.coroutines.*
@@ -11,8 +14,11 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-object AuthRepository: CoroutineScope {
+const val SHAREDPREFERENCESNAME = "SharedPreferences"
+
+class AuthRepository(context: Context): CoroutineScope {
     private val auth: Auth = Auth
+    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(SHAREDPREFERENCESNAME, Context.MODE_PRIVATE)
 
     private val _firebaseUser: MutableLiveData<FirebaseUser?> = MutableLiveData()
     public val firebaseUser: LiveData<FirebaseUser?>
@@ -32,6 +38,9 @@ object AuthRepository: CoroutineScope {
         return suspendCoroutine<Unit> { continuation ->
             auth.createUser(email).addOnCompleteListener {
                 if (it.isSuccessful) {
+                    val editor = sharedPreferences.edit()
+                    editor.putString("email", email)
+                    editor.apply()
                     continuation.resume(Unit)
                 }
                 it.exception?.let {
@@ -52,5 +61,9 @@ object AuthRepository: CoroutineScope {
                 }
             }
         }
+    }
+
+    public fun getSavedEmail(): String? {
+        return sharedPreferences.getString("email", null)
     }
 }
