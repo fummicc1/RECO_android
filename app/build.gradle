@@ -51,8 +51,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     // Firebase Auth
     implementation 'com.google.firebase:firebase-auth-ktx:19.4.0'
+    // Firebase Auth (EmailLink).
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
     // Firebase Firestore
     implementation 'com.google.firebase:firebase-firestore:21.7.1'
+    // Coroutines support for firebase operations
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
     // Firebase ---
 
     // --- Navigation
