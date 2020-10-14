@@ -4,7 +4,7 @@
 # Architecture
 - MVVM + Repository.
 
-- Image from official documentation
+- Image from [official documentation](https://developer.android.com/jetpack/guide?hl=ja)
 
 <img src="https://developer.android.com/topic/libraries/architecture/images/final-architecture.png?hl=ja" width=70%>
 
@@ -14,7 +14,6 @@
 ## ViewModel
 - Each `fragment` has one `ViewModel`.
 - `ViewModel` stores what users want to see.
-- `ViewModel` coordinates two layer, `View` and `Model`, like mapping data from outside into presentable one.
 - `Viewmodel` depends on `Repository`.
 
 ## Repository
