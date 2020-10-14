@@ -1,18 +1,26 @@
 package dev.fummicc1.reco
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
-import dev.fummicc1.reco.repository.SHAREDPREFERENCESNAME
+import dev.fummicc1.reco.repository.AuthRepository
 import dev.fummicc1.reco.ui.signup.SignupFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var authRepository: AuthRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        authRepository = AuthRepository(applicationContext)
 
         // Handle DynamicLinks
         Firebase.dynamicLinks
@@ -21,10 +29,10 @@ class MainActivity : AppCompatActivity() {
                 pendingDynamicLinkData?.let {
                     val emailLink = intent.data.toString()
                     emailLink?.let { emailLink ->
-                        val fragment =
-                            supportFragmentManager.findFragmentById(R.id.signupFragment) as? SignupFragment
-                        fragment?.let {
-                            it.onFindEmailLink(emailLink)
+                        authRepository.getSavedEmail()?.let { email ->
+                            lifecycleScope.launch {
+                                authRepository.login(email, emailLink)
+                            }
                         }
                     }
                 }

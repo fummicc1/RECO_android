@@ -6,9 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dev.fummicc1.reco.R
 import dev.fummicc1.reco.databinding.FragmentSignupBinding
 
@@ -30,6 +33,11 @@ class SignupFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.apply {
+            editTextTextEmailAddress.doAfterTextChanged {
+                it?.toString()?.let {
+                    viewModel.onEditEmail(it)
+                }
+            }
             viewModel.status.observe(viewLifecycleOwner, Observer {
                 when (it) {
                     SignupViewModel.Status.EXCUTE -> progressBar.visibility = View.VISIBLE
@@ -42,13 +50,17 @@ class SignupFragment : Fragment() {
                         .setPositiveButton("OK", { dialog, which ->  })
                         .show()
                 }
+                if (it == SignupViewModel.Status.FAIL) {
+                    Snackbar.make(requireView(), "エラーが発生しました", Snackbar.LENGTH_SHORT).show()
+                }
+            })
+            viewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    findNavController().navigate(SignupFragmentDirections.actionSignupFragmentToHomeFragment())
+                }
             })
         }
         this.viewModel = viewModel
         return binding.root
-    }
-
-    fun onFindEmailLink(emailLink: String) {
-        viewModel.loginWithEmailLink(emailLink)
     }
 }

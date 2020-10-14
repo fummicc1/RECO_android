@@ -4,17 +4,16 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.common.util.SharedPreferencesUtils
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dev.fummicc1.reco.firebase.Auth
 import kotlinx.coroutines.*
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-
-const val SHAREDPREFERENCESNAME = "SharedPreferences"
 
 class AuthRepository(context: Context): CoroutineScope {
     private val auth: Auth = Auth
@@ -29,14 +28,15 @@ class AuthRepository(context: Context): CoroutineScope {
 
     init {
         launch {
-            val user = auth.addAuthListener().currentUser
-            _firebaseUser.postValue(user)
+            auth.addAuthStateListener().collect {
+                _firebaseUser.postValue(it.currentUser)
+            }
         }
     }
 
     public suspend fun signup(email: String): Unit {
         return suspendCoroutine<Unit> { continuation ->
-            auth.createUser(email).addOnCompleteListener {
+            auth.sendSignInLink(email).addOnCompleteListener {
                 if (it.isSuccessful) {
                     val editor = sharedPreferences.edit()
                     editor.putString("email", email)
@@ -67,3 +67,5 @@ class AuthRepository(context: Context): CoroutineScope {
         return sharedPreferences.getString("email", null)
     }
 }
+
+const val SHAREDPREFERENCESNAME = "SharedPreferences"

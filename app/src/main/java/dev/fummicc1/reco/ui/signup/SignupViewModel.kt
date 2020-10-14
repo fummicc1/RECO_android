@@ -1,11 +1,11 @@
 package dev.fummicc1.reco.ui.signup
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dev.fummicc1.reco.repository.AuthRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.Exception
 
 class SignupViewModel(application: Application): AndroidViewModel(application) {
@@ -19,6 +19,10 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
 
     private val authRepository: AuthRepository = AuthRepository(application.applicationContext)
 
+    val isLoggedIn: LiveData<Boolean>
+        get() = Transformations.map(authRepository.firebaseUser, {
+            it != null
+        })
     val status: MutableLiveData<SignupViewModel.Status> = MutableLiveData()
     val email: MutableLiveData<String> = MutableLiveData()
 
@@ -38,16 +42,7 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun loginWithEmailLink(emailLink: String) {
-        authRepository.getSavedEmail()?.let { email ->
-            viewModelScope.launch {
-                try {
-                    authRepository.login(email, emailLink)
-                    status.postValue(Status.SUCCESS)
-                } catch (e: Exception) {
-                    status.postValue(Status.FAIL)
-                }
-            }
-        }
+    fun onEditEmail(email: String) {
+        this.email.postValue(email)
     }
 }

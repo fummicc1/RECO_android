@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="dev.fummicc1.reco.ui.main.MainViewModel" />
+            type="dev.fummicc1.reco.ui.home.HomeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
