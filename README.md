@@ -22,7 +22,7 @@
 - Store fetched data from network to reuse data if cache is preferable.
 
 
-# Skill Stacks (WIP)
+## Skill Stacks (WIP)
 - Firebase
     - Auth
     - Firestore
