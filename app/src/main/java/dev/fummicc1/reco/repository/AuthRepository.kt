@@ -11,7 +11,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class AuthRepository: CoroutineScope {
+object AuthRepository: CoroutineScope {
     private val auth: Auth = Auth
 
     private val _firebaseUser: MutableLiveData<FirebaseUser?> = MutableLiveData()

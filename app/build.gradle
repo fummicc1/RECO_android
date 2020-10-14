@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+// necessary to pass argument to destination. (Directions, Args)
+apply plugin: "androidx.navigation.safeargs"
 
 android {
     compileSdkVersion 30
