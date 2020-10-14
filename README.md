@@ -4,7 +4,8 @@
 # Architecture
 - MVVM + Repository.
 
-<Image from official documentation>
+- Image from official documentation
+
 <img src="https://developer.android.com/topic/libraries/architecture/images/final-architecture.png?hl=ja" width=70%>
 
 ## View
