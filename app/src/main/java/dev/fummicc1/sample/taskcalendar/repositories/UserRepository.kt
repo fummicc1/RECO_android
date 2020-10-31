@@ -3,9 +3,9 @@ package dev.fummicc1.reco.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.DocumentReference
-import dev.fummicc1.reco.data.User
 import dev.fummicc1.reco.firebase.Auth
 import dev.fummicc1.reco.firebase.Firestore
+import dev.fummicc1.sample.taskcalendar.data.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -32,7 +32,7 @@ class UserRepository(listen: Boolean) : CoroutineScope {
     init {
         if (listen)
             getMyUID()?.let {
-                val flow = firestore.listenDocument<User>("users", it)
+                val flow = firestore.listenDocument<User>(User.COLLECTION_NAME, it)
                 launch {
                     flow.collect {
                         _user.postValue(it)
@@ -45,12 +45,12 @@ class UserRepository(listen: Boolean) : CoroutineScope {
 
     fun getMeRef(): DocumentReference? {
         val uid = getMyUID()
-        return if (uid != null) firestore.getReference("users", uid) else null
+        return if (uid != null) firestore.getReference(User.COLLECTION_NAME, uid) else null
     }
 
     suspend fun updateUser(user: User) = suspendCoroutine<Void> { continuation ->
         getMyUID()?.let {
-            firestore.updateDocument("users", it, user).addOnCompleteListener {
+            firestore.updateDocument(User.COLLECTION_NAME, it, user).addOnCompleteListener {
                 it.result?.let {
                     continuation.resume(it)
                 }

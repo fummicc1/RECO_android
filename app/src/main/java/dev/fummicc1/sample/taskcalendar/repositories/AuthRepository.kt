@@ -33,32 +33,20 @@ class AuthRepository(context: Context): CoroutineScope {
         }
     }
 
-    suspend fun signup(email: String): Unit {
-        return suspendCoroutine<Unit> { continuation ->
-            auth.sendSignInLink(email).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val editor = sharedPreferences.edit()
-                    editor.putString("email", email)
-                    editor.apply()
-                    continuation.resume(Unit)
-                }
-                it.exception?.let {
-                    continuation.resumeWithException(it)
-                }
+    suspend fun signInAnonymously(): FirebaseUser = suspendCoroutine { continuation ->
+        auth.signInAnonymously().addOnCompleteListener {
+            val user = it.result?.user
+            if (user != null) {
+                continuation.resume(user)
+            }
+            it.exception?.let {
+                continuation.resumeWithException(it)
             }
         }
     }
 
     suspend fun login(email: String, emailLink: String) : FirebaseUser {
         return suspendCoroutine<FirebaseUser> { continuation ->
-            auth.signInWithEmaiLink(email, emailLink).addOnCompleteListener {
-                it.result?.user?.let {
-                    continuation.resume(it)
-                }
-                it.exception?.let {
-                    continuation.resumeWithException(it)
-                }
-            }
         }
     }
 
