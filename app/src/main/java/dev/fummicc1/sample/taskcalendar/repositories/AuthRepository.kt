@@ -1,6 +1,7 @@
 package dev.fummicc1.reco.repository
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +15,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class AuthRepository(context: Context): CoroutineScope {
+class AuthRepository(val context: Context): CoroutineScope {
     private val auth: Auth = Auth
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(SHAREDPREFERENCESNAME, Context.MODE_PRIVATE)
 
@@ -33,8 +34,22 @@ class AuthRepository(context: Context): CoroutineScope {
         }
     }
 
+    fun getSignInIntent(): Intent = Auth.getSignInIntent(context)
+
     suspend fun signInAnonymously(): FirebaseUser = suspendCoroutine { continuation ->
         auth.signInAnonymously().addOnCompleteListener {
+            val user = it.result?.user
+            if (user != null) {
+                continuation.resume(user)
+            }
+            it.exception?.let {
+                continuation.resumeWithException(it)
+            }
+        }
+    }
+
+    suspend fun signInWithGoogle(idToken: String): FirebaseUser = suspendCoroutine { continuation ->
+        auth.signInWithGoogle(idToken).addOnCompleteListener {
             val user = it.result?.user
             if (user != null) {
                 continuation.resume(user)
